@@ -14,3 +14,4 @@ void WaveSolver::Solve(matrix_t matrix)
         }
     }
 }
+

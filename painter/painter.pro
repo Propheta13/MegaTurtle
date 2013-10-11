@@ -16,7 +16,8 @@ SOURCES += main.cpp\
     mgscene.cpp \
     mtailgenerator.cpp \
     msettingsdialog.cpp \
-    wavesolver.cpp
+    wavesolver.cpp \
+    matrix.cpp
 
 HEADERS  += mainwindow.h \
     mgscene.h \
