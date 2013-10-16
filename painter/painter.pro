@@ -16,8 +16,8 @@ SOURCES += main.cpp\
     mgscene.cpp \
     mtailgenerator.cpp \
     msettingsdialog.cpp \
-    wavesolver.cpp \
-    matrix.cpp
+    matrix.cpp \
+    matrixer.cpp
 
 HEADERS  += mainwindow.h \
     mgscene.h \
@@ -25,7 +25,7 @@ HEADERS  += mainwindow.h \
     msettingsdialog.h \
     mdefault.h \
     tail.h \
-    wavesolver.h
+    matrixer.h
 
 FORMS    += mainwindow.ui \
     msettingsdialog.ui

@@ -6,7 +6,7 @@
 #include <QColor>
 
 #include "tail.h"
-#include "wavesolver.h"
+#include "matrixer.h"
 
 class MGScene;
 
@@ -25,7 +25,7 @@ private:
     MGScene *m_scene;
     QImage  *m_hmap;
     quint32  m_tail_resolution;
-    WaveSolver::matrix_t m_matrix;
+    Matrixer::matrix_t m_matrix;
 
     typedef struct
     {

@@ -6,7 +6,7 @@
 #include "mgscene.h"
 #include "mtailgenerator.h"
 #include "mdefault.h"
-#include "wavesolver.h"
+#include "matrixer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(m_map_scene);
 
     m_settings.tail_resolution = MapGenerator::DefaultTailResolution; //default value
-    m_map_scene->setSceneRect(QRectF(0,0,m_settings.tail_resolution*WaveSolver::SIZEX+1,m_settings.tail_resolution*WaveSolver::SIZEY+1));
+    m_map_scene->setSceneRect(QRectF(0,0,m_settings.tail_resolution*Matrixer::SIZEX+1,m_settings.tail_resolution*Matrixer::SIZEY+1));
     m_tailgen = new MTailGenerator(m_map_scene, this);
 
     QObject::connect(ui->actionGenerate_tail_map, SIGNAL(triggered()), this, SLOT(slotGenerateTailMap()));

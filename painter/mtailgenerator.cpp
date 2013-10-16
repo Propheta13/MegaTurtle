@@ -2,6 +2,7 @@
 #include "mgscene.h"
 #include "mdefault.h"
 #include "tail.h"
+#include "matrixer.h"
 
 #include <QRgb>
 #include <QFile>
@@ -23,17 +24,19 @@ void MTailGenerator::generate()
     quint32 ts = m_tail_resolution;
     int i = 0;
 
-    int matrix[WaveSolver::SIZEX][WaveSolver::SIZEY];
-    WaveSolver::matrix_t matrix_p = matrix;
+    Matrixer *matrix_d = new Matrixer;
 
-    WaveSolver::Solve(matrix_p);
+
+    Matrixer::matrix_t matrix_p = matrix_d->field;
+
+    matrix_d->Solve();
 
     m_poly_base.clear();
 
-    for(int x=0; x<WaveSolver::SIZEX; x++)
+    for(int x=0; x<Matrixer::SIZEX; x++)
     {
         int j = 0;
-        for(int y=0; y<WaveSolver::SIZEY; y++)
+        for(int y=0; y<Matrixer::SIZEY; y++)
         {
             QVector<QPointF> poly_vector;
             MPoly poly;
@@ -48,19 +51,19 @@ void MTailGenerator::generate()
 
             switch(matrix_p[x][y])
             {
-            case WaveSolver::EMPTY:
+            case Matrixer::EMPTY:
                 poly.colour = Qt::white;
                 break;
-            case WaveSolver::BARYER:
+            case Matrixer::BARYER:
                 poly.colour = Qt::black;
                 break;
-            case WaveSolver::START:
+            case Matrixer::START:
                 poly.colour = Qt::yellow;
                 break;
-            case WaveSolver::FINISH:
+            case Matrixer::FINISH:
                 poly.colour = Qt::blue;
                 break;
-            case WaveSolver::PATH:
+            case Matrixer::PATH:
                 poly.colour = Qt::green;
                 break;
             }
