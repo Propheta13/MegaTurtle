@@ -6,6 +6,8 @@
 
 #include <QRgb>
 #include <QFile>
+#include <stdio.h>
+#include <QThread>
 
 MTailGenerator::MTailGenerator(MGScene *scene, QObject *parent) :
     QObject(parent)
@@ -19,19 +21,22 @@ void MTailGenerator::setTailResolution(quint32 resolution)
     m_tail_resolution = resolution;
 }
 
-void MTailGenerator::generate()
+
+
+int MTailGenerator::generate()
 {
     quint32 ts = m_tail_resolution;
     int i = 0;
-
-    Matrixer *matrix_d = new Matrixer;
-
+    int res = 0;
 
     Matrixer::matrix_t matrix_p = matrix_d->field;
 
-    matrix_d->Solve();
+//  res = matrix_d->fill_step(matrix_d->field);
+
+//    matrix_d->Solve();
 
     m_poly_base.clear();
+//    usleep(200);
 
     for(int x=0; x<Matrixer::SIZEX; x++)
     {
@@ -76,6 +81,72 @@ void MTailGenerator::generate()
         }
         i += ts;
     }
+    return res;
+}
+
+void MTailGenerator::solve()
+{
+    QThread *workerThread = new QThread(this);
+
+    connect(workerThread, &QThread::started, matrix_d, &Matrixer::Solve);
+    //connect(workerThread, &QThread::finished, worker, &Worker::deleteLater);
+    matrix_d->moveToThread(workerThread);
+
+    // Starts an event loop, and emits workerThread->started()
+    workerThread->start();
+
+//    quint32 ts = m_tail_resolution;
+//    int i = 0;
+
+//    Matrixer::matrix_t matrix_p = matrix_d->field;
+
+//    matrix_d->Solve();
+
+//    m_poly_base.clear();
+
+//    for(int x=0; x<Matrixer::SIZEX; x++)
+//    {
+//        int j = 0;
+//        for(int y=0; y<Matrixer::SIZEY; y++)
+//        {
+//            QVector<QPointF> poly_vector;
+//            MPoly poly;
+
+//            poly.tail.attributes = 0;
+//            poly.tail.type = Tail::RawStone;
+//            poly_vector.append(QPointF(i,j));
+//            poly_vector.append(QPointF(i,j+ts));
+//            poly_vector.append(QPointF(i+ts,j+ts));
+//            poly_vector.append(QPointF(i+ts,j));
+//            poly.poly = QPolygonF(poly_vector);
+
+//            switch(matrix_p[x][y])
+//            {
+//            case Matrixer::EMPTY:
+//                poly.colour = Qt::white;
+//                break;
+//            case Matrixer::BARYER:
+//                poly.colour = Qt::black;
+//                break;
+//            case Matrixer::START:
+//                poly.colour = Qt::yellow;
+//                break;
+//            case Matrixer::FINISH:
+//                poly.colour = Qt::blue;
+//                break;
+//            case Matrixer::PATH:
+//                poly.colour = Qt::green;
+//                break;
+//            default :
+//                poly.colour = Qt::red;
+//                break;
+//            }
+
+//            m_poly_base.append(poly);
+//            j += ts;
+//        }
+//        i += ts;
+//    }
 }
 
 void MTailGenerator::draw()
@@ -91,6 +162,13 @@ void MTailGenerator::draw()
         tPoly = (MPoly *)it;
         m_scene->addPolygon(tPoly->poly, QPen(), QBrush(tPoly->colour));
     }
+
+}
+
+void MTailGenerator::slotUpdate()
+{
+    generate();
+    draw();
 }
 
 void MTailGenerator::save(const QString fname)

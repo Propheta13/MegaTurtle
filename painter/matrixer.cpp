@@ -4,7 +4,7 @@
 #include <time.h>
 #include "matrixer.h"
 
-Matrixer::Matrixer()
+Matrixer::Matrixer() : QObject()
 {
     time_t rawtime;
     time( &rawtime );
@@ -12,6 +12,7 @@ Matrixer::Matrixer()
     memset(field, 0, sizeof(field));
     randomize_matrix(field);
     start_finish_matrix(field);
+    loc = 0;
 }
 
 void Matrixer::randomize_matrix(matrix_t matrix)
@@ -121,7 +122,59 @@ void Matrixer::start_finish_matrix(matrix_t matrix)
 
 }
 
-int Matrixer::fill_matrix(matrix_t matrix)
+//int Matrixer::fill_matrix(matrix_t matrix)
+//{
+//    bool flag = false;
+//    bool done = false;
+//    unsigned int x, y, k;
+//    unsigned int x1, y1;
+////    int32_t dx[]={0, -1, -1, 1, 0, 1, -1,  1, 1 };
+////    int32_t dy[]={-1, 0, -1, 0, 1, 1,  1, -1, 1 };
+//    int32_t dx[]={0, -1, 1, 0};
+//    int32_t dy[]={-1, 0, 0, 1};
+////    int32_t loc = 0;
+//    do
+//    {
+//        flag = false;
+//        for (x=0; x<SIZEX; x++)
+//        {
+//            for (y=0; y<SIZEY; y++)
+//            {
+//                if (matrix[x][y] ==  loc)
+//                {
+//                    for (k=0; k<(sizeof(dx)/sizeof(int32_t)); k++)
+//                    {
+//                        x1=x+dx[k];
+//                        y1=y+dy[k];
+//                        if ((x1 < SIZEX) && (y1 < SIZEY))
+//                        {
+//                            if (matrix[x1][y1] == EMPTY)
+//                            {
+//                                matrix[x1][y1] = loc + 1;
+//                                flag = true;
+//                            }
+//                            if (matrix[x1][y1] == FINISH)
+//                            {
+//                                matrix[x1][y1] = loc + 1;
+//                                done = true;
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
+//                if (done) {break;}
+//            }
+//            if (done) {break;}
+//        }
+//        loc ++;
+//    }
+//    while(flag && !done);
+//    if (done) {return 0;}
+//    return -1;
+
+//}
+
+int Matrixer::fill_step(matrix_t matrix)
 {
     bool flag = false;
     bool done = false;
@@ -131,46 +184,51 @@ int Matrixer::fill_matrix(matrix_t matrix)
 //    int32_t dy[]={-1, 0, -1, 0, 1, 1,  1, -1, 1 };
     int32_t dx[]={0, -1, 1, 0};
     int32_t dy[]={-1, 0, 0, 1};
-    int32_t loc = 0;
-    do
+
+    for (x=0; x<SIZEX; x++)
     {
-        flag = false;
-        for (x=0; x<SIZEX; x++)
+        for (y=0; y<SIZEY; y++)
         {
-            for (y=0; y<SIZEY; y++)
+            if (matrix[x][y] ==  loc)
             {
-                if (matrix[x][y] ==  loc)
+                for (k=0; k<(sizeof(dx)/sizeof(int32_t)); k++)
                 {
-                    for (k=0; k<(sizeof(dx)/sizeof(int32_t)); k++)
+                    x1=x+dx[k];
+                    y1=y+dy[k];
+                    if ((x1 < SIZEX) && (y1 < SIZEY))
                     {
-                        x1=x+dx[k];
-                        y1=y+dy[k];
-                        if ((x1 < SIZEX) && (y1 < SIZEY))
+                        if (matrix[x1][y1] == EMPTY)
                         {
-                            if (matrix[x1][y1] == EMPTY)
-                            {
-                                matrix[x1][y1] = loc + 1;
-                                flag = true;
-                            }
-                            if (matrix[x1][y1] == FINISH)
-                            {
-                                matrix[x1][y1] = loc + 1;
-                                done = true;
-                                break;
-                            }
+                            matrix[x1][y1] = loc + 1;
+                            flag = true;
+                        }
+                        if (matrix[x1][y1] == FINISH)
+                        {
+                            matrix[x1][y1] = loc + 1;
+                            done = true;
+                            break;
                         }
                     }
                 }
-                if (done) {break;}
             }
             if (done) {break;}
         }
-        loc ++;
+        if (done) {break;}
     }
-    while(flag && !done);
-    if (done) {return 0;}
-    return -1;
+    loc ++;
 
+    emit signalChanged();
+    usleep(100000);
+
+    if (done) {return RESOLVED;}
+    if (flag) {return STEP_OK;}
+    return NO_PATH;
+
+}
+
+void Matrixer::fill_matrix(void)
+{
+    while (fill_step(field) == STEP_OK);
 }
 
 int Matrixer::path_matrix(matrix_t matrix)
@@ -183,7 +241,10 @@ int Matrixer::path_matrix(matrix_t matrix)
     int32_t dy[]={-1, 0, 0, 1};
     //printf("mass = %d\n", mass);
     matrix[x_finish][y_finish] = FINISH;
-    do
+
+    if (mass < 0) {return 0;}
+
+    while(mass)
     {
         mass--;
         for (k=0; k<(sizeof(dx)/sizeof(int32_t)); k++)
@@ -202,7 +263,6 @@ int Matrixer::path_matrix(matrix_t matrix)
             }
         }
     }
-    while(mass);
     matrix[x][y] = START;
 
     for (x=0; x<SIZEX; x++)
@@ -219,16 +279,15 @@ int Matrixer::path_matrix(matrix_t matrix)
         }
     }
 
+    emit signalChanged();
+
     return 0;
 }
 
 void Matrixer::Solve(void)
 {
 
-    if (fill_matrix (field)) {
-    return;
-    }
-
+    fill_matrix();
     path_matrix(field);
 }
 

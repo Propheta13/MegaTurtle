@@ -17,16 +17,17 @@ public:
     explicit MTailGenerator(MGScene *scene = 0, QObject *parent = 0);
 
     void setTailResolution(quint32 resolution);
-    void generate();
+    int generate();
+    void solve();
     void draw();
     void save(const QString fname);
+    Matrixer *matrix_d;
 
 private:
     MGScene *m_scene;
     QImage  *m_hmap;
     quint32  m_tail_resolution;
-    Matrixer::matrix_t m_matrix;
-
+//    Matrixer::matrix_t m_matrix;
     typedef struct
     {
         QPolygonF poly;
@@ -35,6 +36,9 @@ private:
     } MPoly;
 
     QVector<MPoly> m_poly_base;
+
+public slots:
+    void slotUpdate();
 };
 
 #endif // MTAILGENERATOR_H
