@@ -69,10 +69,10 @@ int MTailGenerator::generate()
                 poly.colour = Qt::blue;
                 break;
             case Matrixer::PATH:
-                poly.colour = Qt::green;
+                poly.colour = Qt::darkGreen;
                 break;
             default :
-                poly.colour = Qt::red;
+                poly.colour = /*Qt::darkBlue;*/qRgb(matrix_p[x][y], 0, 255 - matrix_p[x][y]);
                 break;
             }
 
