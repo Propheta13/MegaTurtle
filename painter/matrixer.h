@@ -41,11 +41,10 @@ public:
 
 private:
 
-    void randomize_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y);
-    void start_finish_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y);
-    int fill_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y);
-    int path_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y);
-
+    void randomize_matrix(matrix_t matrix);
+    void start_finish_matrix(matrix_t matrix);
+    int fill_matrix(matrix_t matrix);
+    int path_matrix(matrix_t matrix);
 };
 
 

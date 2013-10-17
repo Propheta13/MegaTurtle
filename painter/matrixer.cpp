@@ -6,10 +6,15 @@
 
 Matrixer::Matrixer()
 {
+    time_t rawtime;
+    time( &rawtime );
+    srandom((unsigned int)rawtime);
     memset(field, 0, sizeof(field));
+    randomize_matrix(field);
+    start_finish_matrix(field);
 }
 
-void Matrixer::randomize_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y)
+void Matrixer::randomize_matrix(matrix_t matrix)
 {
     unsigned int count = COUNT_RANDOM;
     unsigned int x, y;
@@ -22,11 +27,6 @@ void Matrixer::randomize_matrix(matrix_t matrix, unsigned int len_X, unsigned in
         }
     }
 
-//    while(count--)
-//    {
-//        line(matrix, random() % SIZEX, random() % SIZEY, random() % 4, (random() % 10) + 2);
-//    }
-
     do
     {
         do
@@ -34,14 +34,14 @@ void Matrixer::randomize_matrix(matrix_t matrix, unsigned int len_X, unsigned in
             x = random();
             x = x % SIZEX;
         }
-        while(x>=len_X);
+        while(x>=SIZEX);
 
         do
         {
             y=random();
             y = y % SIZEY;
         }
-        while(y>=len_Y);
+        while(y>=SIZEY);
 
         if (matrix[x][y] == EMPTY)
         {
@@ -54,31 +54,31 @@ void Matrixer::randomize_matrix(matrix_t matrix, unsigned int len_X, unsigned in
 }
 
 
-void Matrixer::start_finish_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y)
+void Matrixer::start_finish_matrix(matrix_t matrix)
 {
     int x, y, i;
     int x_s[2][4];
     int y_s[2][4];
     x_s[0][0] = 0;
     y_s[0][0] = 0;
-    x_s[1][0] = len_X / COUNT_QUADR;
-    y_s[1][0] = len_Y / COUNT_QUADR;
+    x_s[1][0] = SIZEX / COUNT_QUADR;
+    y_s[1][0] = SIZEY / COUNT_QUADR;
 
     x_s[0][1] = 0;
-    y_s[0][1] = len_Y - len_Y / COUNT_QUADR;
-    x_s[1][1] = len_X / COUNT_QUADR;
-    y_s[1][1] = len_Y;
+    y_s[0][1] = SIZEY - SIZEY / COUNT_QUADR;
+    x_s[1][1] = SIZEX / COUNT_QUADR;
+    y_s[1][1] = SIZEY;
 
-    x_s[0][2] = len_X - len_X / COUNT_QUADR;
+    x_s[0][2] = SIZEX - SIZEX / COUNT_QUADR;
     y_s[0][2] = 0;
-    x_s[1][2] = len_X;
-    y_s[1][2] = len_Y / COUNT_QUADR;
+    x_s[1][2] = SIZEX;
+    y_s[1][2] = SIZEY / COUNT_QUADR;
 
 
-    x_s[0][3] = len_X - len_X / COUNT_QUADR;
-    y_s[0][3] = len_Y - len_Y / COUNT_QUADR;
-    x_s[1][3] = len_X;
-    y_s[1][3] = len_Y;
+    x_s[0][3] = SIZEX - SIZEX / COUNT_QUADR;
+    y_s[0][3] = SIZEY - SIZEY / COUNT_QUADR;
+    x_s[1][3] = SIZEX;
+    y_s[1][3] = SIZEY;
 
     //find start
     i=0;
@@ -121,7 +121,7 @@ void Matrixer::start_finish_matrix(matrix_t matrix, unsigned int len_X, unsigned
 
 }
 
-int Matrixer::fill_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y)
+int Matrixer::fill_matrix(matrix_t matrix)
 {
     bool flag = false;
     bool done = false;
@@ -135,9 +135,9 @@ int Matrixer::fill_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_
     do
     {
         flag = false;
-        for (x=0; x<len_X; x++)
+        for (x=0; x<SIZEX; x++)
         {
-            for (y=0; y<len_Y; y++)
+            for (y=0; y<SIZEY; y++)
             {
                 if (matrix[x][y] ==  loc)
                 {
@@ -145,7 +145,7 @@ int Matrixer::fill_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_
                     {
                         x1=x+dx[k];
                         y1=y+dy[k];
-                        if ((x1 < len_X) && (y1 < len_Y))
+                        if ((x1 < SIZEX) && (y1 < SIZEY))
                         {
                             if (matrix[x1][y1] == EMPTY)
                             {
@@ -173,7 +173,7 @@ int Matrixer::fill_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_
 
 }
 
-int Matrixer::path_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y)
+int Matrixer::path_matrix(matrix_t matrix)
 {
     unsigned int x = x_finish, y = y_finish, k, x1, y1;
     int mass = matrix[x_finish][y_finish];
@@ -190,7 +190,7 @@ int Matrixer::path_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_
         {
             x1=x+dx[k];
             y1=y+dy[k];
-            if ((x1 < len_X) && (y1 < len_Y))
+            if ((x1 < SIZEX) && (y1 < SIZEY))
             {
                 if (matrix[x1][y1] == mass)
                 {
@@ -205,9 +205,9 @@ int Matrixer::path_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_
     while(mass);
     matrix[x][y] = START;
 
-    for (x=0; x<len_X; x++)
+    for (x=0; x<SIZEX; x++)
     {
-        for (y=0; y<len_Y; y++)
+        for (y=0; y<SIZEY; y++)
         {
             if ((matrix[x][y] != START) &&
                     (matrix[x][y] != BARYER) &&
@@ -224,17 +224,12 @@ int Matrixer::path_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_
 
 void Matrixer::Solve(void)
 {
-//    int x_f, y_f;
-    srand(time(NULL));
 
-    randomize_matrix(field, SIZEX, SIZEY);
-    start_finish_matrix(field, SIZEX, SIZEY);
-
-    if (fill_matrix (field, SIZEX, SIZEY)) {
+    if (fill_matrix (field)) {
     return;
     }
 
-    path_matrix(field, SIZEX, SIZEY);
+    path_matrix(field);
 }
 
 
