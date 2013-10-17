@@ -36,15 +36,15 @@ public:
     };
     int32_t field [SIZEX][SIZEY];
     typedef  int (*matrix_t)[SIZEY];
-
+    int x_finish, y_finish;
     void Solve(void);
 
 private:
 
-void randomize_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y);
-void start_finish_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y, int *x_f, int *y_f);
-int fill_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y);
-int path_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y, unsigned int Fin_X, unsigned int Fin_Y);
+    void randomize_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y);
+    void start_finish_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y);
+    int fill_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y);
+    int path_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y);
 
 };
 

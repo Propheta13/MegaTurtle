@@ -7,7 +7,6 @@
 Matrixer::Matrixer()
 {
     memset(field, 0, sizeof(field));
-//    printf("sizeof = %d \n", sizeof(field));
 }
 
 void Matrixer::randomize_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y)
@@ -55,7 +54,7 @@ void Matrixer::randomize_matrix(matrix_t matrix, unsigned int len_X, unsigned in
 }
 
 
-void Matrixer::start_finish_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y, int *x_f, int *y_f)
+void Matrixer::start_finish_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y)
 {
     int x, y, i;
     int x_s[2][4];
@@ -115,8 +114,10 @@ void Matrixer::start_finish_matrix(matrix_t matrix, unsigned int len_X, unsigned
     }
     while(matrix[x][y] == START);
     matrix[x][y] = FINISH;
-    *x_f = x;
-    *y_f = y;
+//    *x_f = x;
+//    *y_f = y;
+    x_finish = x;
+    y_finish = y;
 
 }
 
@@ -172,16 +173,16 @@ int Matrixer::fill_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_
 
 }
 
-int Matrixer::path_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y, unsigned int Fin_X, unsigned int Fin_Y)
+int Matrixer::path_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_Y)
 {
-    unsigned int x = Fin_X, y = Fin_Y, k, x1, y1;
-    int mass = matrix[Fin_X][Fin_Y];
+    unsigned int x = x_finish, y = y_finish, k, x1, y1;
+    int mass = matrix[x_finish][y_finish];
 //    int32_t dx[]={0, -1, -1, 1, 0, 1, -1,  1, 1 };
 //    int32_t dy[]={-1, 0, -1, 0, 1, 1,  1, -1, 1 };
     int32_t dx[]={0, -1, 1, 0};
     int32_t dy[]={-1, 0, 0, 1};
     //printf("mass = %d\n", mass);
-    matrix[Fin_X][Fin_Y] = FINISH;
+    matrix[x_finish][y_finish] = FINISH;
     do
     {
         mass--;
@@ -223,17 +224,17 @@ int Matrixer::path_matrix(matrix_t matrix, unsigned int len_X, unsigned int len_
 
 void Matrixer::Solve(void)
 {
-    int x_f, y_f;
+//    int x_f, y_f;
     srand(time(NULL));
 
     randomize_matrix(field, SIZEX, SIZEY);
-    start_finish_matrix(field, SIZEX, SIZEY, &x_f, &y_f);
+    start_finish_matrix(field, SIZEX, SIZEY);
 
     if (fill_matrix (field, SIZEX, SIZEY)) {
     return;
     }
 
-    path_matrix(field, SIZEX, SIZEY, x_f, y_f);
+    path_matrix(field, SIZEX, SIZEY);
 }
 
 

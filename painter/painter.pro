@@ -16,7 +16,6 @@ SOURCES += main.cpp\
     mgscene.cpp \
     mtailgenerator.cpp \
     msettingsdialog.cpp \
-    matrix.cpp \
     matrixer.cpp
 
 HEADERS  += mainwindow.h \

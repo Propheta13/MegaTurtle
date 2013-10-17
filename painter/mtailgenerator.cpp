@@ -66,6 +66,9 @@ void MTailGenerator::generate()
             case Matrixer::PATH:
                 poly.colour = Qt::green;
                 break;
+            default :
+                poly.colour = Qt::red;
+                break;
             }
 
             m_poly_base.append(poly);
