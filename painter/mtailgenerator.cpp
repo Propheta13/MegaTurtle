@@ -15,6 +15,7 @@ MTailGenerator::MTailGenerator(MGScene *scene, QObject *parent) :
     m_scene = scene;
     m_tail_resolution = MapGenerator::DefaultTailResolution;
     quint32 ts = m_tail_resolution;
+    dx = 255;
 
     int i = 0;
 
@@ -80,10 +81,13 @@ int MTailGenerator::generate()
                 cl = Qt::blue;
                 break;
             case Matrixer::PATH:
-                cl = Qt::darkGreen;
+                cl = Qt::yellow;//qRgb(255 - poly->colour.red(), 0, 255 - poly->colour.blue());
                 break;
             default :
-                cl = qRgb(matrix_p[x][y], 0, 255 - matrix_p[x][y]);
+                if(matrix_p[x][y]/256%2 == 0)
+                    cl = qRgb(matrix_p[x][y], 0, 255 - matrix_p[x][y]);
+                else
+                    cl = qRgb(255 - matrix_p[x][y], 0, matrix_p[x][y]);
                 break;
             }
 

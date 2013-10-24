@@ -37,7 +37,7 @@ private:
         bool needs_colour_update;
         QGraphicsPolygonItem *gi;
     } MPoly;
-
+    int dx;
     QMap<int, MPoly> m_poly_base;
     QVector<int> m_update_queue;
     int key(int x, int y){return (x ^ (y<<0x10));}

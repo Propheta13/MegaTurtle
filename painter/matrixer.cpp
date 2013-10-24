@@ -95,7 +95,8 @@ void Matrixer::start_finish_matrix(matrix_t matrix)
         y &= 0xFFF;
     }
     while(!((y > y_s[0][i]) && (y < y_s[1][i])));
-    matrix[x][y] = START;
+    //matrix[x][y] = START;
+    matrix[1][1] = START;
 
     i=3;
     do
@@ -114,12 +115,53 @@ void Matrixer::start_finish_matrix(matrix_t matrix)
         while(!((y > y_s[0][i]) && (y < y_s[1][i])));
     }
     while(matrix[x][y] == START);
-    matrix[x][y] = FINISH;
+    matrix[SIZEX-1][SIZEY-1] = FINISH;
+    //matrix[x][y] = FINISH;
 //    *x_f = x;
 //    *y_f = y;
-    x_finish = x;
-    y_finish = y;
+//    x_finish = x;
+//    y_finish = y;
+    x_finish = SIZEX-1;
+    y_finish = SIZEY-1;
 
+    y = 50;
+    for(x=0;x<SIZEX-50;x++)
+    {
+        matrix[x][y] = BARYER;
+    }
+
+    y = 100;
+
+    for(x=50;x<SIZEX;x++)
+    {
+        matrix[x][y] = BARYER;
+    }
+
+//    y = 150;
+//    for(x=0;x<SIZEX-50;x++)
+//    {
+//        matrix[x][y] = BARYER;
+//    }
+
+//    y = 200;
+
+//    for(x=50;x<SIZEX;x++)
+//    {
+//        matrix[x][y] = BARYER;
+//    }
+
+//    y = 250;
+//    for(x=0;x<SIZEX-50;x++)
+//    {
+//        matrix[x][y] = BARYER;
+//    }
+
+//    y = 300;
+
+//    for(x=50;x<SIZEX;x++)
+//    {
+//        matrix[x][y] = BARYER;
+//    }
 }
 
 //int Matrixer::fill_matrix(matrix_t matrix)
@@ -219,7 +261,8 @@ int Matrixer::fill_step(matrix_t matrix)
 
     emit signalChanged();
 
-    if (done) {return RESOLVED;}
+    if (done) { printf("loc =%d\n", loc);
+        return RESOLVED;}
     if (flag) {return STEP_OK;}
     return NO_PATH;
 
@@ -257,6 +300,7 @@ int Matrixer::path_matrix(matrix_t matrix)
                     matrix[x1][y1] = PATH;
                     x=x1;
                     y=y1;
+                    emit signalChanged();
                     break;
                 }
             }
