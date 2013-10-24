@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QPolygonF>
 #include <QColor>
+#include <QGraphicsPolygonItem>
+#include <QMap>
 
 #include "tail.h"
 #include "matrixer.h"
@@ -27,15 +29,18 @@ private:
     MGScene *m_scene;
     QImage  *m_hmap;
     quint32  m_tail_resolution;
-//    Matrixer::matrix_t m_matrix;
     typedef struct
     {
         QPolygonF poly;
         Tail::tail_t tail;
         QColor colour;
+        bool needs_colour_update;
+        QGraphicsPolygonItem *gi;
     } MPoly;
 
-    QVector<MPoly> m_poly_base;
+    QMap<int, MPoly> m_poly_base;
+    QVector<int> m_update_queue;
+    int key(int x, int y){return (x ^ (y<<0x10));}
 
 public slots:
     void slotUpdate();

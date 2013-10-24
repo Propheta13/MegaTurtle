@@ -218,7 +218,6 @@ int Matrixer::fill_step(matrix_t matrix)
     loc ++;
 
     emit signalChanged();
-    usleep(100000);
 
     if (done) {return RESOLVED;}
     if (flag) {return STEP_OK;}

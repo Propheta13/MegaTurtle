@@ -46,20 +46,14 @@ void MainWindow::slotGenerateTailMap()
 {
     Matrixer *matrix_d = new Matrixer();
 
-    QObject::connect(matrix_d, SIGNAL(signalChanged()), m_tailgen, SLOT(slotUpdate()));
+    QObject::connect(matrix_d, SIGNAL(signalChanged()), m_tailgen, SLOT(slotUpdate()), Qt::BlockingQueuedConnection);
 
     m_tailgen->matrix_d = matrix_d;
 
     m_tailgen->setTailResolution(m_settings.tail_resolution);
-//    m_tailgen->solve();
-//    while(m_tailgen->generate() == Matrixer::STEP_OK)
-//    {
-//        //m_tailgen->draw();
 
-//        usleep(100);
-//    }
     m_tailgen->solve();
-    //m_tailgen->draw();
+
     ui->actionSave_tail_map->setEnabled(true);
 }
 
@@ -80,5 +74,5 @@ void MainWindow::slotSaveTailMap()
         return;
     }
 
-    m_tailgen->save(fileName);
+    m_tailgen->save(NULL/*fileName*/);
 }
